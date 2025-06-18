@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class BaseTest < MiniTest::Test
+class BaseTest < Minitest::Test
   def setup
     setup_db
     @card = Flashcard.create
