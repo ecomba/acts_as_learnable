@@ -15,10 +15,12 @@ module ActsAsLearnable
 
   module InstanceMethods
     def review(recall_quality)
-      raise unless (1..5).include?(recall_quality)
+      unless (0..5).cover?(recall_quality)
+        raise ArgumentError, "Invalid recall quality (valid ranges between 0 and 5)"
+      end
 
       # If the quality of response was lower than 3, then start repetitions from the beginning
-      reset and return if recall_quality <= 2
+      reset and return if recall_quality < 3
 
       # Calculate new easiness factor
       update_easiness_factor(recall_quality)
@@ -60,7 +62,8 @@ module ActsAsLearnable
 
     # Calculates new easiness factor according to the formula
     def calculate_easiness_factor(quality)
-      easiness_factor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02))
+      easiness_factor - 0.8 + (0.28 * quality) - (0.02 * quality * quality)
+      #easiness_factor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02))
     end
 
     # Update interval according to the formula
